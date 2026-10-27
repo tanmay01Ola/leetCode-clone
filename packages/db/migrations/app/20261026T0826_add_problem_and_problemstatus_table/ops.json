@@ -1,0 +1,300 @@
+[
+  {
+    "id": "table.ProblemStatus",
+    "label": "Create table \"ProblemStatus\"",
+    "summary": "Creates table \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ProblemStatus\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ProblemStatus\"",
+        "sql": "CREATE TABLE \"public\".\"ProblemStatus\" (\n  \"id\" text NOT NULL,\n  \"problemId\" text NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ProblemStatus\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"ProblemStatus\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Problems",
+    "label": "Create table \"Problems\"",
+    "summary": "Creates table \"Problems\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Problems"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Problems\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Problems\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Problems\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Problems\"",
+        "sql": "CREATE TABLE \"public\".\"Problems\" (\n  \"CPUlimit\" float8 NOT NULL,\n  \"description\" text,\n  \"difficultyLevel\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"memoryLimit\" int4 NOT NULL,\n  \"problemStatement\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Problems_difficultyLevel_check_a1c20f22\" CHECK (\"difficultyLevel\" IN ('easy', 'medium', 'hard'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Problems\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Problems\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Problems\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "index.ProblemStatus.ProblemStatus_problemId_idx_0024556d",
+    "label": "Create index \"ProblemStatus_problemId_idx_0024556d\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProblemStatus_problemId_idx_0024556d",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProblemStatus_problemId_idx_0024556d\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus_problemId_idx_0024556d\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"ProblemStatus_problemId_idx_0024556d\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProblemStatus_problemId_idx_0024556d\"",
+        "sql": "CREATE INDEX \"ProblemStatus_problemId_idx_0024556d\" ON \"public\".\"ProblemStatus\" (\"problemId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProblemStatus_problemId_idx_0024556d\" exists on \"ProblemStatus\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus_problemId_idx_0024556d\"",
+          "i",
+          "I",
+          "\"public\".\"ProblemStatus\"",
+          "btree",
+          "[\"problemId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProblemStatus.ProblemStatus_userId_idx_a489d58a",
+    "label": "Create index \"ProblemStatus_userId_idx_a489d58a\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProblemStatus_userId_idx_a489d58a",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProblemStatus_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus_userId_idx_a489d58a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"ProblemStatus_userId_idx_a489d58a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProblemStatus_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"ProblemStatus_userId_idx_a489d58a\" ON \"public\".\"ProblemStatus\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProblemStatus_userId_idx_a489d58a\" exists on \"ProblemStatus\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus_userId_idx_a489d58a\"",
+          "i",
+          "I",
+          "\"public\".\"ProblemStatus\"",
+          "btree",
+          "[\"userId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ProblemStatus.ProblemStatus_problemId_fkey",
+    "label": "Add foreign key \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProblemStatus_problemId_fkey",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ProblemStatus_problemId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_problemId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ProblemStatus_problemId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\"\nADD CONSTRAINT \"ProblemStatus_problemId_fkey\"\nFOREIGN KEY (\"problemId\")\nREFERENCES \"public\".\"Problems\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ProblemStatus_problemId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "ProblemStatus_problemId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\"",
+          "f",
+          "[\"problemId\"]",
+          "\"public\".\"Problems\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ProblemStatus.ProblemStatus_userId_fkey",
+    "label": "Add foreign key \"ProblemStatus_userId_fkey\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProblemStatus_userId_fkey",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ProblemStatus_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_userId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"ProblemStatus_userId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ProblemStatus_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\"\nADD CONSTRAINT \"ProblemStatus_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ProblemStatus_userId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "ProblemStatus_userId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\"",
+          "f",
+          "[\"userId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  }
+]

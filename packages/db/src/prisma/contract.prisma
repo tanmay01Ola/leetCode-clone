@@ -1,0 +1,36 @@
+// use prisma-8
+
+model User {
+  id String @id @onCreate(uuid())
+  username String @unique
+  email String @unique
+  password String
+}
+
+
+model Problems {
+  id String @id @onCreate(uuid())
+  problemStatement String
+  description String?
+  difficultyLevel difficultyLevel
+  memoryLimit Int
+  CPUlimit Float
+  ProblemStatus ProblemStatus[]
+}
+
+model  ProblemStatus {
+  // Fields
+  id String @id @onCreate(uuid())
+  problemId String
+  problem  Problems @relation(fields: [problemId ], references: [id])
+  userId String
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum  difficultyLevel {
+  // Block keys and attributes
+  easy
+  medium
+  hard
+}
+
