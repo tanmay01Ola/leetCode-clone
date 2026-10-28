@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'469afe019fbb906bb6bce9a493e4f65257671f761e4248f64df1276971bea2e9'>;
+  StorageHashBase<'d49c65ca9350cf7d3fb450f2829401273c034fe240e9121e6b17460cd3711923'>;
 export type ExecutionHash =
   ExecutionHashBase<'d5d902017b8922dfdac4119e98dcec4f25a263d99f9b2beaac754e0303700c47'>;
 export type ProfileHash =
@@ -247,6 +247,9 @@ type FieldTypeOverrides = {
           readonly input: 'easy' | 'medium' | 'hard';
         };
       };
+      readonly User: {
+        readonly role: { readonly output: 'user' | 'admin'; readonly input: 'user' | 'admin' };
+      };
     };
   };
 };
@@ -271,6 +274,9 @@ type ColumnTypeOverrides = {
         readonly output: 'easy' | 'medium' | 'hard';
         readonly input: 'easy' | 'medium' | 'hard';
       };
+    };
+    readonly User: {
+      readonly role: { readonly output: 'user' | 'admin'; readonly input: 'user' | 'admin' };
     };
   };
 };
@@ -312,6 +318,7 @@ export namespace Models {
     email: FieldOutputTypes['public']['User']['email'];
     id: FieldOutputTypes['public']['User']['id'];
     password: FieldOutputTypes['public']['User']['password'];
+    role: FieldOutputTypes['public']['User']['role'];
     username: FieldOutputTypes['public']['User']['username'];
     readonly [RelationKeys]?: never;
   };
@@ -471,6 +478,16 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly many: false;
                 };
+                readonly role: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'user'>;
+                  };
+                  readonly many: false;
+                };
                 readonly username: {
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
@@ -491,6 +508,10 @@ type ContractBase = Omit<
             readonly difficultyLevel: {
               readonly kind: 'valueSet';
               readonly values: readonly ['easy', 'medium', 'hard'];
+            };
+            readonly Role: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['user', 'admin'];
             };
           };
         };
@@ -629,6 +650,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly role: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly username: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -642,12 +667,20 @@ type ContractBase = Omit<
                 readonly email: { readonly column: 'email' };
                 readonly id: { readonly column: 'id' };
                 readonly password: { readonly column: 'password' };
+                readonly role: { readonly column: 'role' };
                 readonly username: { readonly column: 'username' };
               };
             };
           };
         };
         readonly enum: {
+          readonly Role: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'user'; readonly value: 'user' },
+              { readonly name: 'admin'; readonly value: 'admin' },
+            ];
+          };
           readonly difficultyLevel: {
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
@@ -658,6 +691,10 @@ type ContractBase = Omit<
           };
         };
         readonly enumMemberTypes?: {
+          readonly Role: readonly [
+            { readonly name: 'user'; readonly value: 'user' },
+            { readonly name: 'admin'; readonly value: 'admin' },
+          ];
           readonly difficultyLevel: readonly [
             { readonly name: 'easy'; readonly value: 'easy' },
             { readonly name: 'medium'; readonly value: 'medium' },

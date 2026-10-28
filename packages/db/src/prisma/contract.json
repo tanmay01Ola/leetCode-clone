@@ -21,6 +21,19 @@
     "namespaces": {
       "public": {
         "enum": {
+          "Role": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "user",
+                "value": "user"
+              },
+              {
+                "name": "admin",
+                "value": "admin"
+              }
+            ]
+          },
           "difficultyLevel": {
             "codecId": "pg/text@1",
             "members": [
@@ -230,6 +243,19 @@
                   "kind": "scalar"
                 }
               },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Role",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
               "username": {
                 "nullable": false,
                 "type": {
@@ -249,6 +275,9 @@
                 },
                 "password": {
                   "column": "password"
+                },
+                "role": {
+                  "column": "role"
                 },
                 "username": {
                   "column": "username"
@@ -406,6 +435,13 @@
               "uniques": []
             },
             "User": {
+              "checks": [
+                {
+                  "expression": "\"role\" IN ('user', 'admin')",
+                  "name": "User_role_check_5b6d1a59",
+                  "prefix": "User_role_check"
+                }
+              ],
               "columns": {
                 "email": {
                   "codecId": "pg/text@1",
@@ -421,6 +457,21 @@
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": false
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": "user"
+                  },
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Role",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
                 },
                 "username": {
                   "codecId": "pg/text@1",
@@ -450,6 +501,13 @@
             }
           },
           "valueSet": {
+            "Role": {
+              "kind": "valueSet",
+              "values": [
+                "user",
+                "admin"
+              ]
+            },
             "difficultyLevel": {
               "kind": "valueSet",
               "values": [
@@ -464,7 +522,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "469afe019fbb906bb6bce9a493e4f65257671f761e4248f64df1276971bea2e9"
+    "storageHash": "d49c65ca9350cf7d3fb450f2829401273c034fe240e9121e6b17460cd3711923"
   },
   "execution": {
     "executionHash": "d5d902017b8922dfdac4119e98dcec4f25a263d99f9b2beaac754e0303700c47",

@@ -17,14 +17,14 @@ UserRouter.post("/signup" , async(req ,res)=>{
             })
         )
     }   
-    const {username , email , password} = parsedBody.data;
+    const {username , email , password , role} = parsedBody.data;
     const hashedPassword = await bcrypt.hash(password , 10);
-    const addUser = await db.orm.public.User.create({
-        email : email,
-        password  : hashedPassword,
-        username : username
-    })
-
+ const addUser = await db.orm.public.User.create({
+    username : username ,
+    password : password,
+    email : email,
+    role : role
+ })
     if(!addUser){
         return(res.status(400).json({
             message : "CAN'T_SIGNUP"
