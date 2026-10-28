@@ -4,10 +4,13 @@ const JWT_SECRET = process.env.JWT_SECRET;
 interface payload {
     id : string
 }
+export interface Auth extends Request {
+    userId? : string
+}
 if(!JWT_SECRET){
     throw new Error("JWT_SECRET_NOT_SET_UP")
 }
-export function Auth(req  : Request, res : Response, next : NextFunction){ 
+export function auth(req  : Auth, res : Response, next : NextFunction){ 
      const authHeader = req.headers.authorization;
      if(!authHeader?.startsWith("Bearer")){
         return(res.status(402).json({
