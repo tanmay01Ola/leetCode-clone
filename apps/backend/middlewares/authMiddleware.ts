@@ -5,13 +5,14 @@ interface payload {
     id : string
 }
 export interface Auth extends Request {
-    userId? : string
+    id? : string
 }
 if(!JWT_SECRET){
     throw new Error("JWT_SECRET_NOT_SET_UP")
 }
 export function auth(req  : Auth, res : Response, next : NextFunction){ 
      const authHeader = req.headers.authorization;
+     console.log("AUTHHEADER" , authHeader)
      if(!authHeader?.startsWith("Bearer")){
         return(res.status(402).json({
             message : "BAD_REQUEST"
@@ -19,13 +20,14 @@ export function auth(req  : Auth, res : Response, next : NextFunction){
      }
 
      const token = authHeader.split(" ")[1];
+     console.log("TOKEN=" , token)
     if(!token){
         return(res.status(403).json({
             message : "TOKEN_NOT_SENT"
         }))
     }
-     const payload = jwt.verify(token , (JWT_SECRET)!) as payload
-     const userId = payload.id;
-    
+const payload = jwt.verify(token , (JWT_SECRET)!) as string;
+     console.log("PAYLOAD" , payload)
+     req.id = payload;
      next()
 }

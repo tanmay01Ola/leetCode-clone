@@ -1,0 +1,145 @@
+[
+  {
+    "id": "column.public.Problems.submitId",
+    "label": "Add column \"submitId\" to \"Problems\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "submitId",
+        "table": "Problems"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"submitId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "submitId"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"submitId\" on \"Problems\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"submitId\"",
+        "sql": "ALTER TABLE \"public\".\"Problems\" ADD COLUMN \"submitId\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"submitId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "submitId"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"submitId\" on \"Problems\""
+        }
+      },
+      {
+        "description": "verify column \"submitId\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "submitId",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.ProblemStatus.code",
+    "label": "Add column code to ProblemStatus",
+    "summary": "Adds column code to table ProblemStatus",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProblemStatus"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"code\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"code\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"code\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ADD COLUMN \"code\" text DEFAULT ('') NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"code\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ALTER COLUMN \"code\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"code\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"code\" on \"ProblemStatus\""
+        }
+      },
+      {
+        "description": "verify column \"code\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"code\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code"
+        ]
+      },
+      {
+        "description": "verify column \"code\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code",
+          "text"
+        ]
+      }
+    ]
+  }
+]

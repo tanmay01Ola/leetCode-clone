@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signupBody } from "../zod";
+import { signinBody, signupBody } from "../zod";
 import { db } from "db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -21,7 +21,7 @@ UserRouter.post("/signup" , async(req ,res)=>{
     const hashedPassword = await bcrypt.hash(password , 10);
  const addUser = await db.orm.public.User.create({
     username : username ,
-    password : password,
+    password : hashedPassword,
     email : email,
     role : role
  })
@@ -38,7 +38,7 @@ UserRouter.post("/signup" , async(req ,res)=>{
 
 
 UserRouter.post("/signin" , async(req ,res)=>{
-    const parsedBody = signupBody.safeParse(req.body);
+    const parsedBody = signinBody.safeParse(req.body);
     if(!parsedBody.success){
         return(res.status(400).json({
             message : "BAD_INPUTS"

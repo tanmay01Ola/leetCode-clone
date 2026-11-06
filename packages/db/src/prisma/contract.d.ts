@@ -23,9 +23,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'d49c65ca9350cf7d3fb450f2829401273c034fe240e9121e6b17460cd3711923'>;
+  StorageHashBase<'d0c5b9105b92535d26649a2a9abdd3a58f47d1855edf9573c1462b19c5e04edb'>;
 export type ExecutionHash =
-  ExecutionHashBase<'d5d902017b8922dfdac4119e98dcec4f25a263d99f9b2beaac754e0303700c47'>;
+  ExecutionHashBase<'5ef045b0a63948919f0dd2eaaa98ed8ab6f275409a34e176060f7c5970ea5e62'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -247,6 +247,16 @@ type FieldTypeOverrides = {
           readonly input: 'easy' | 'medium' | 'hard';
         };
       };
+      readonly ProblemStatus: {
+        readonly language: {
+          readonly output: 'javascript' | 'typescript' | 'go' | 'rust' | 'python' | 'ccc';
+          readonly input: 'javascript' | 'typescript' | 'go' | 'rust' | 'python' | 'ccc';
+        };
+        readonly status: {
+          readonly output: 'not_attempted' | 'submitted' | 'accepted';
+          readonly input: 'not_attempted' | 'submitted' | 'accepted';
+        };
+      };
       readonly User: {
         readonly role: { readonly output: 'user' | 'admin'; readonly input: 'user' | 'admin' };
       };
@@ -275,6 +285,16 @@ type ColumnTypeOverrides = {
         readonly input: 'easy' | 'medium' | 'hard';
       };
     };
+    readonly ProblemStatus: {
+      readonly language: {
+        readonly output: 'javascript' | 'typescript' | 'go' | 'rust' | 'python' | 'ccc';
+        readonly input: 'javascript' | 'typescript' | 'go' | 'rust' | 'python' | 'ccc';
+      };
+      readonly status: {
+        readonly output: 'not_attempted' | 'submitted' | 'accepted';
+        readonly input: 'not_attempted' | 'submitted' | 'accepted';
+      };
+    };
     readonly User: {
       readonly role: { readonly output: 'user' | 'admin'; readonly input: 'user' | 'admin' };
     };
@@ -297,8 +317,11 @@ export type StorageColumnInputTypes = ColumnTypesFromStorage<
 
 export namespace Models {
   export type public_ProblemStatus = {
+    code: FieldOutputTypes['public']['ProblemStatus']['code'];
     id: FieldOutputTypes['public']['ProblemStatus']['id'];
+    language: FieldOutputTypes['public']['ProblemStatus']['language'];
     problemId: FieldOutputTypes['public']['ProblemStatus']['problemId'];
+    status: FieldOutputTypes['public']['ProblemStatus']['status'];
     userId: FieldOutputTypes['public']['ProblemStatus']['userId'];
     problem: public_Problems;
     user: public_User;
@@ -306,13 +329,17 @@ export namespace Models {
   };
   export type public_Problems = {
     CPUlimit: FieldOutputTypes['public']['Problems']['CPUlimit'];
+    adminId: FieldOutputTypes['public']['Problems']['adminId'];
     description: FieldOutputTypes['public']['Problems']['description'];
     difficultyLevel: FieldOutputTypes['public']['Problems']['difficultyLevel'];
     id: FieldOutputTypes['public']['Problems']['id'];
     memoryLimit: FieldOutputTypes['public']['Problems']['memoryLimit'];
     problemStatement: FieldOutputTypes['public']['Problems']['problemStatement'];
+    submit: FieldOutputTypes['public']['Problems']['submit'];
+    submitId: FieldOutputTypes['public']['Problems']['submitId'];
     ProblemStatus: public_ProblemStatus[];
-    readonly [RelationKeys]?: 'ProblemStatus';
+    admin: public_User;
+    readonly [RelationKeys]?: 'ProblemStatus' | 'admin';
   };
   export type public_User = {
     email: FieldOutputTypes['public']['User']['email'];
@@ -320,7 +347,9 @@ export namespace Models {
     password: FieldOutputTypes['public']['User']['password'];
     role: FieldOutputTypes['public']['User']['role'];
     username: FieldOutputTypes['public']['User']['username'];
-    readonly [RelationKeys]?: never;
+    problemStatus: public_ProblemStatus[];
+    prolems: public_Problems[];
+    readonly [RelationKeys]?: 'problemStatus' | 'prolems';
   };
 }
 
@@ -358,6 +387,12 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly many: false;
                 };
+                readonly adminId: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
                 readonly description: {
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
@@ -388,15 +423,63 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly many: false;
                 };
+                readonly submit: {
+                  readonly dataType: 'pg/bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                  readonly many: false;
+                };
+                readonly submitId: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [];
-              indexes: readonly [];
-              foreignKeys: readonly [];
+              uniques: readonly [{ readonly columns: readonly ['problemStatement', 'adminId'] }];
+              indexes: readonly [
+                {
+                  readonly name: 'Problems_adminId_idx_530179db';
+                  readonly prefix: 'Problems_adminId_idx';
+                  readonly columns: readonly ['adminId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'Problems';
+                    readonly columns: readonly ['adminId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'User';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
             };
             readonly ProblemStatus: {
               columns: {
+                readonly code: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
                 readonly id: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly language: {
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
@@ -406,6 +489,16 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly status: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'not_attempted'>;
+                  };
                   readonly many: false;
                 };
                 readonly userId: {
@@ -509,9 +602,17 @@ type ContractBase = Omit<
               readonly kind: 'valueSet';
               readonly values: readonly ['easy', 'medium', 'hard'];
             };
+            readonly language: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['javascript', 'typescript', 'go', 'rust', 'python', 'ccc'];
+            };
             readonly Role: {
               readonly kind: 'valueSet';
               readonly values: readonly ['user', 'admin'];
+            };
+            readonly Status: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['not_attempted', 'submitted', 'accepted'];
             };
           };
         };
@@ -541,6 +642,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/float8@1' };
               };
+              readonly adminId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly description: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -561,6 +666,14 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly submit: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly submitId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
             };
             readonly relations: {
               readonly ProblemStatus: {
@@ -574,27 +687,51 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['problemId'];
                 };
               };
+              readonly admin: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['adminId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
             };
             readonly storage: {
               readonly table: 'Problems';
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly CPUlimit: { readonly column: 'CPUlimit' };
+                readonly adminId: { readonly column: 'adminId' };
                 readonly description: { readonly column: 'description' };
                 readonly difficultyLevel: { readonly column: 'difficultyLevel' };
                 readonly id: { readonly column: 'id' };
                 readonly memoryLimit: { readonly column: 'memoryLimit' };
                 readonly problemStatement: { readonly column: 'problemStatement' };
+                readonly submit: { readonly column: 'submit' };
+                readonly submitId: { readonly column: 'submitId' };
               };
             };
           };
           readonly ProblemStatus: {
             readonly fields: {
+              readonly code: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly language: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly problemId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly status: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
@@ -630,8 +767,11 @@ type ContractBase = Omit<
               readonly table: 'ProblemStatus';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly code: { readonly column: 'code' };
                 readonly id: { readonly column: 'id' };
+                readonly language: { readonly column: 'language' };
                 readonly problemId: { readonly column: 'problemId' };
+                readonly status: { readonly column: 'status' };
                 readonly userId: { readonly column: 'userId' };
               };
             };
@@ -659,7 +799,30 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
             };
-            readonly relations: Record<string, never>;
+            readonly relations: {
+              readonly problemStatus: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'ProblemStatus';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['userId'];
+                };
+              };
+              readonly prolems: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Problems';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['adminId'];
+                };
+              };
+            };
             readonly storage: {
               readonly table: 'User';
               readonly namespaceId: 'public';
@@ -681,6 +844,14 @@ type ContractBase = Omit<
               { readonly name: 'admin'; readonly value: 'admin' },
             ];
           };
+          readonly Status: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'not_attempted'; readonly value: 'not_attempted' },
+              { readonly name: 'submitted'; readonly value: 'submitted' },
+              { readonly name: 'accepted'; readonly value: 'accepted' },
+            ];
+          };
           readonly difficultyLevel: {
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
@@ -689,16 +860,40 @@ type ContractBase = Omit<
               { readonly name: 'hard'; readonly value: 'hard' },
             ];
           };
+          readonly language: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'javascript'; readonly value: 'javascript' },
+              { readonly name: 'typescript'; readonly value: 'typescript' },
+              { readonly name: 'go'; readonly value: 'go' },
+              { readonly name: 'rust'; readonly value: 'rust' },
+              { readonly name: 'python'; readonly value: 'python' },
+              { readonly name: 'ccc'; readonly value: 'ccc' },
+            ];
+          };
         };
         readonly enumMemberTypes?: {
           readonly Role: readonly [
             { readonly name: 'user'; readonly value: 'user' },
             { readonly name: 'admin'; readonly value: 'admin' },
           ];
+          readonly Status: readonly [
+            { readonly name: 'not_attempted'; readonly value: 'not_attempted' },
+            { readonly name: 'submitted'; readonly value: 'submitted' },
+            { readonly name: 'accepted'; readonly value: 'accepted' },
+          ];
           readonly difficultyLevel: readonly [
             { readonly name: 'easy'; readonly value: 'easy' },
             { readonly name: 'medium'; readonly value: 'medium' },
             { readonly name: 'hard'; readonly value: 'hard' },
+          ];
+          readonly language: readonly [
+            { readonly name: 'javascript'; readonly value: 'javascript' },
+            { readonly name: 'typescript'; readonly value: 'typescript' },
+            { readonly name: 'go'; readonly value: 'go' },
+            { readonly name: 'rust'; readonly value: 'rust' },
+            { readonly name: 'python'; readonly value: 'python' },
+            { readonly name: 'ccc'; readonly value: 'ccc' },
           ];
         };
       };
@@ -749,6 +944,14 @@ type ContractBase = Omit<
           readonly ref: {
             readonly entry: 'Problems';
             readonly field: 'id';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'uuidv4'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'Problems';
+            readonly field: 'submitId';
             readonly namespace: 'public';
           };
         },

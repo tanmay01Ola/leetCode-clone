@@ -8,7 +8,8 @@ import type { Auth } from "../middlewares/authMiddleware";
 
 
 problemRouter.post("/addProblem" ,auth ,async (req : Auth,res)=>{
-    const userId = req.userId;
+    const userId = req.id
+    console.log("ID ==" , userId)
     if(!userId){
         return(res.status(402).json({
             message : "USER NOT LOGGED IN"
@@ -43,5 +44,4 @@ problemRouter.post("/addProblem" ,auth ,async (req : Auth,res)=>{
         message : "PROBLEM_CREATED",
         problemId : addProblem.id
     })
-
 })

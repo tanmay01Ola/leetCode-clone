@@ -6,6 +6,8 @@ model User {
   email String @unique
   password String
   role Role @default(user)
+  prolems Problems[]
+  problemStatus ProblemStatus[]
 }
 
 
@@ -18,15 +20,23 @@ model Problems {
   memoryLimit Int
   CPUlimit Float
   ProblemStatus ProblemStatus[]
-}
+  submit Boolean @default(false)
+  submitId String? @onCreate(uuid())
+  adminId String
+  admin User @relation (fields: [adminId] , references: [id])
+
+  @@unique([problemStatement , adminId])
+} 
 
 model  ProblemStatus {
-  // Fields
   id String @id @onCreate(uuid())
   problemId String
-  problem  Problems @relation(fields: [problemId ], references: [id])
+  problem  Problems @relation(fields: [problemId], references: [id])
+  code String
   userId String
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId] , references: [id])
+  language language
+  status Status @default(not_attempted)
 }
 
 enum  difficultyLevel {
@@ -35,8 +45,24 @@ enum  difficultyLevel {
   medium
   hard
 }
+enum language {
+  // Block keys and attributes
+  javascript
+  typescript
+  go 
+  rust 
+  python
+  ccc
+}
 
 enum  Role {
   user
   admin
+}
+
+enum  Status {
+  // Block keys and attributes
+  not_attempted
+  submitted
+  accepted
 }

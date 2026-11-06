@@ -1,0 +1,675 @@
+[
+  {
+    "id": "dropConstraint.ProblemStatus.ProblemStatus_problemId_fkey",
+    "label": "Drop constraint \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProblemStatus_problemId_fkey",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ProblemStatus_problemId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_problemId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "constraint \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"ProblemStatus_problemId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" DROP CONSTRAINT \"ProblemStatus_problemId_fkey\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ProblemStatus_problemId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_problemId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "dropConstraint.ProblemStatus.ProblemStatus_userId_fkey",
+    "label": "Drop constraint \"ProblemStatus_userId_fkey\" on \"ProblemStatus\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProblemStatus_userId_fkey",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ProblemStatus_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_userId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "constraint \"ProblemStatus_userId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"ProblemStatus_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" DROP CONSTRAINT \"ProblemStatus_userId_fkey\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ProblemStatus_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_userId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"ProblemStatus_userId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.ProblemStatus.ProblemStatus_userId_idx_a489d58a",
+    "label": "Drop index \"ProblemStatus_userId_idx_a489d58a\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProblemStatus_userId_idx_a489d58a",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProblemStatus_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus_userId_idx_a489d58a\""
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "index \"ProblemStatus_userId_idx_a489d58a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"ProblemStatus_userId_idx_a489d58a\"",
+        "sql": "DROP INDEX \"public\".\"ProblemStatus_userId_idx_a489d58a\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProblemStatus_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProblemStatus_userId_idx_a489d58a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"ProblemStatus_userId_idx_a489d58a\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.ProblemStatus.userId",
+    "label": "Drop column \"userId\" from \"ProblemStatus\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "userId",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"userId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "userId"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"userId\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"userId\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" DROP COLUMN \"userId\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"userId\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "userId"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"userId\" on \"ProblemStatus\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "dropTable.Problems",
+    "label": "Drop table \"Problems\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Problems"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Problems\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Problems\""
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Problems\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop table \"Problems\"",
+        "sql": "DROP TABLE \"public\".\"Problems\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Problems\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Problems\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Problems\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Problem",
+    "label": "Create table \"Problem\"",
+    "summary": "Creates table \"Problem\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Problem"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Problem\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Problem\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Problem\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Problem\"",
+        "sql": "CREATE TABLE \"public\".\"Problem\" (\n  \"CPUlimit\" float8 NOT NULL,\n  \"description\" text,\n  \"difficultyLevel\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"memoryLimit\" int4 NOT NULL,\n  \"problemStatement\" text NOT NULL,\n  \"submit\" bool DEFAULT false NOT NULL,\n  \"submitId\" text,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Problem_difficultyLevel_check_a1c20f22\" CHECK (\"difficultyLevel\" IN ('easy', 'medium', 'hard'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Problem\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Problem\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Problem\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "column.public.ProblemStatus.status",
+    "label": "Add column \"status\" to \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "status"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"status\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ADD COLUMN \"status\" text DEFAULT 'not_attempted' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "status"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"status\" on \"ProblemStatus\""
+        }
+      },
+      {
+        "description": "verify column \"status\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "status",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"status\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "status",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.ProblemStatus.code",
+    "label": "Add column code to ProblemStatus",
+    "summary": "Adds column code to table ProblemStatus",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProblemStatus"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"code\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"code\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"code\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ADD COLUMN \"code\" text DEFAULT ('') NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"code\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ALTER COLUMN \"code\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"code\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"code\" on \"ProblemStatus\""
+        }
+      },
+      {
+        "description": "verify column \"code\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"code\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code"
+        ]
+      },
+      {
+        "description": "verify column \"code\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "code",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.ProblemStatus.language",
+    "label": "Add column language to ProblemStatus",
+    "summary": "Adds column language to table ProblemStatus",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "language",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"language\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "language"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"language\" on \"ProblemStatus\""
+        }
+      },
+      {
+        "description": "ensure table \"ProblemStatus\" is empty before adding NOT NULL column without default",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"public\".\"ProblemStatus\" LIMIT 1) AS \"result\"",
+        "params": [],
+        "meta": {
+          "requiredColumn": {
+            "table": "ProblemStatus",
+            "column": "language",
+            "reason": "newField"
+          }
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"language\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ADD COLUMN \"language\" text NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"language\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "language"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"language\" on \"ProblemStatus\""
+        }
+      },
+      {
+        "description": "verify column \"language\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "language",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"language\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ProblemStatus",
+          "language",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.ProblemStatus.ProblemStatus_language_check_032d133c",
+    "label": "Add check constraint \"ProblemStatus_language_check_032d133c\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "ProblemStatus_language_check_032d133c",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ProblemStatus_language_check_032d133c\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_language_check_032d133c",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"ProblemStatus_language_check_032d133c\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"ProblemStatus_language_check_032d133c\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ADD CONSTRAINT \"ProblemStatus_language_check_032d133c\" CHECK (\"language\" IN ('javascript', 'typescript', 'go', 'rust', 'python', 'ccc'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify check constraint \"ProblemStatus_language_check_032d133c\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4)) AS \"result\"",
+        "params": [
+          "ProblemStatus_language_check_032d133c",
+          "public",
+          "\"public\".\"ProblemStatus\"",
+          "c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.ProblemStatus.ProblemStatus_status_check_6e9e3569",
+    "label": "Add check constraint \"ProblemStatus_status_check_6e9e3569\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "ProblemStatus_status_check_6e9e3569",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ProblemStatus_status_check_6e9e3569\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_status_check_6e9e3569",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"ProblemStatus_status_check_6e9e3569\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"ProblemStatus_status_check_6e9e3569\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\" ADD CONSTRAINT \"ProblemStatus_status_check_6e9e3569\" CHECK (\"status\" IN ('not_attempted', 'submitted', 'accepted'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify check constraint \"ProblemStatus_status_check_6e9e3569\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4)) AS \"result\"",
+        "params": [
+          "ProblemStatus_status_check_6e9e3569",
+          "public",
+          "\"public\".\"ProblemStatus\"",
+          "c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ProblemStatus.ProblemStatus_problemId_fkey",
+    "label": "Add foreign key \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProblemStatus_problemId_fkey",
+        "table": "ProblemStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ProblemStatus_problemId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProblemStatus_problemId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"ProblemStatus_problemId_fkey\" on \"ProblemStatus\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ProblemStatus_problemId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProblemStatus\"\nADD CONSTRAINT \"ProblemStatus_problemId_fkey\"\nFOREIGN KEY (\"problemId\")\nREFERENCES \"public\".\"Problem\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ProblemStatus_problemId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "ProblemStatus_problemId_fkey",
+          "public",
+          "\"public\".\"ProblemStatus\"",
+          "f",
+          "[\"problemId\"]",
+          "\"public\".\"Problem\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  }
+]

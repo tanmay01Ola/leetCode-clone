@@ -19,3 +19,8 @@ export const problemBody = z.object({
    memoryLimit : z.number(),
    CPULimit : z.number()
 })
+
+export const submissionBody = z.object({
+    language : z.enum(['ccc' , "javascript" , 'typescript' , 'python' , 'go' , 'rust']),
+    code : z.string() 
+})

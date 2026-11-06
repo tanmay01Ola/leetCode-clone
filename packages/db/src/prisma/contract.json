@@ -34,6 +34,23 @@
               }
             ]
           },
+          "Status": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "not_attempted",
+                "value": "not_attempted"
+              },
+              {
+                "name": "submitted",
+                "value": "submitted"
+              },
+              {
+                "name": "accepted",
+                "value": "accepted"
+              }
+            ]
+          },
           "difficultyLevel": {
             "codecId": "pg/text@1",
             "members": [
@@ -50,11 +67,47 @@
                 "value": "hard"
               }
             ]
+          },
+          "language": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "javascript",
+                "value": "javascript"
+              },
+              {
+                "name": "typescript",
+                "value": "typescript"
+              },
+              {
+                "name": "go",
+                "value": "go"
+              },
+              {
+                "name": "rust",
+                "value": "rust"
+              },
+              {
+                "name": "python",
+                "value": "python"
+              },
+              {
+                "name": "ccc",
+                "value": "ccc"
+              }
+            ]
           }
         },
         "models": {
           "ProblemStatus": {
             "fields": {
+              "code": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -62,11 +115,37 @@
                   "kind": "scalar"
                 }
               },
+              "language": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "language",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
               "problemId": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Status",
+                  "namespaceId": "public",
+                  "plane": "domain"
                 }
               },
               "userId": {
@@ -113,11 +192,20 @@
             },
             "storage": {
               "fields": {
+                "code": {
+                  "column": "code"
+                },
                 "id": {
                   "column": "id"
                 },
+                "language": {
+                  "column": "language"
+                },
                 "problemId": {
                   "column": "problemId"
+                },
+                "status": {
+                  "column": "status"
                 },
                 "userId": {
                   "column": "userId"
@@ -133,6 +221,13 @@
                 "nullable": false,
                 "type": {
                   "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "adminId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -176,6 +271,20 @@
                   "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
+              },
+              "submit": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "submitId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
               }
             },
             "relations": {
@@ -193,12 +302,31 @@
                   "model": "ProblemStatus",
                   "namespace": "public"
                 }
+              },
+              "admin": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "adminId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
               "fields": {
                 "CPUlimit": {
                   "column": "CPUlimit"
+                },
+                "adminId": {
+                  "column": "adminId"
                 },
                 "description": {
                   "column": "description"
@@ -214,6 +342,12 @@
                 },
                 "problemStatement": {
                   "column": "problemStatement"
+                },
+                "submit": {
+                  "column": "submit"
+                },
+                "submitId": {
+                  "column": "submitId"
                 }
               },
               "namespaceId": "public",
@@ -264,7 +398,38 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "problemStatus": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "userId"
+                  ]
+                },
+                "to": {
+                  "model": "ProblemStatus",
+                  "namespace": "public"
+                }
+              },
+              "prolems": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "adminId"
+                  ]
+                },
+                "to": {
+                  "model": "Problems",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "email": {
@@ -297,16 +462,59 @@
         "entries": {
           "table": {
             "ProblemStatus": {
+              "checks": [
+                {
+                  "expression": "\"language\" IN ('javascript', 'typescript', 'go', 'rust', 'python', 'ccc')",
+                  "name": "ProblemStatus_language_check_032d133c",
+                  "prefix": "ProblemStatus_language_check"
+                },
+                {
+                  "expression": "\"status\" IN ('not_attempted', 'submitted', 'accepted')",
+                  "name": "ProblemStatus_status_check_6e9e3569",
+                  "prefix": "ProblemStatus_status_check"
+                }
+              ],
               "columns": {
+                "code": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
                 "id": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": false
                 },
+                "language": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "language",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
                 "problemId": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": "not_attempted"
+                  },
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Status",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
                 },
                 "userId": {
                   "codecId": "pg/text@1",
@@ -393,6 +601,11 @@
                   "dataType": "pg/float8",
                   "nullable": false
                 },
+                "adminId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
                 "description": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
@@ -423,16 +636,66 @@
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": false
+                },
+                "submit": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "submitId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
                 }
               },
-              "foreignKeys": [],
-              "indexes": [],
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Problems_adminId_idx_530179db"
+                  },
+                  "source": {
+                    "columns": [
+                      "adminId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Problems"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "adminId"
+                  ],
+                  "name": "Problems_adminId_idx_530179db",
+                  "prefix": "Problems_adminId_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
                 ]
               },
-              "uniques": []
+              "uniques": [
+                {
+                  "columns": [
+                    "problemStatement",
+                    "adminId"
+                  ]
+                }
+              ]
             },
             "User": {
               "checks": [
@@ -508,12 +771,31 @@
                 "admin"
               ]
             },
+            "Status": {
+              "kind": "valueSet",
+              "values": [
+                "not_attempted",
+                "submitted",
+                "accepted"
+              ]
+            },
             "difficultyLevel": {
               "kind": "valueSet",
               "values": [
                 "easy",
                 "medium",
                 "hard"
+              ]
+            },
+            "language": {
+              "kind": "valueSet",
+              "values": [
+                "javascript",
+                "typescript",
+                "go",
+                "rust",
+                "python",
+                "ccc"
               ]
             }
           }
@@ -522,10 +804,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "d49c65ca9350cf7d3fb450f2829401273c034fe240e9121e6b17460cd3711923"
+    "storageHash": "d0c5b9105b92535d26649a2a9abdd3a58f47d1855edf9573c1462b19c5e04edb"
   },
   "execution": {
-    "executionHash": "d5d902017b8922dfdac4119e98dcec4f25a263d99f9b2beaac754e0303700c47",
+    "executionHash": "5ef045b0a63948919f0dd2eaaa98ed8ab6f275409a34e176060f7c5970ea5e62",
     "mutations": {
       "defaults": [
         {
@@ -547,6 +829,17 @@
           "ref": {
             "entry": "Problems",
             "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Problems",
+            "field": "submitId",
             "namespace": "public"
           }
         },
