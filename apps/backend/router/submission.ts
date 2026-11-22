@@ -1,22 +1,26 @@
 import { Router } from "express";
 export const submissionRouter = Router();
-import { createClient } from "redis"
 import { auth, type Auth } from "../middlewares/authMiddleware";
 import { db } from "db";
 import { submissionBody } from "../zod";
-
-const client = createClient()
-client.connect();
-submissionRouter.post("/:problemId", async(req   ,res)=>{
-    try{
-        console.log("HERERER")
+import {redisClient} from "../../worker/client";
+import {WorkerLoop} from "../../worker/index"
+redisClient.connect()
+submissionRouter.post("/:problemId",auth ,  async(req : Auth   ,res)=>{
+const userId = req.id;
+if(!userId){
+    return(res.status(403).json({
+        message : "USER_NOT_LOGGED_IN"
+    }))
+}
     const problemId = req.params.problemId;
-    // const userId = req.userId;
-    // if(!userId){
-    //     return(res.status(400).json({
-    //         message : "BAD_REQUEST"
-    //     }))
-    // }
+    if(!(typeof problemId === "string")){
+         return(
+            res.status(400).json({
+                message : "BAD_REQUEST"
+            })
+         )
+    }
     const parsedBody = submissionBody.safeParse(req.body);
     if(!parsedBody.success){
         return(res.status(400).json({
@@ -24,22 +28,27 @@ submissionRouter.post("/:problemId", async(req   ,res)=>{
         }))
     }
     const {code , language } = parsedBody.data;
-    console.log("BEFORE RESPONSE")
    const response = await db.orm.public.ProblemStatus.create({
+    userId : userId,
     code : code,
     language :language,
     status : "accepted",
     problemId : problemId
    })
     const submissionId = response.id
-    client.lPush("problems" , JSON.stringify({ problemId , code , language ,submissionId}))
 
+    const job = {
+        problemId,
+        code ,
+        language ,
+        submissionId
+    }
+    await redisClient.lPush("problems" , JSON.stringify({job}))
+    console.log("BEFORE THAT")
+   WorkerLoop()
     res.json({
         message : "processing..",
        submitId : submissionId   
     })
-} 
-catch(err){
-    throw new Error("smthn is gdbd")
-}
+
 })

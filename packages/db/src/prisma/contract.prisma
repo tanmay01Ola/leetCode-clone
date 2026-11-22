@@ -6,8 +6,8 @@ model User {
   email String @unique
   password String
   role Role @default(user)
-  prolems Problems[]
-  problemStatus ProblemStatus[]
+  problems Problems[]
+  ProblemStatus ProblemStatus[]
 }
 
 
@@ -22,10 +22,9 @@ model Problems {
   ProblemStatus ProblemStatus[]
   submit Boolean @default(false)
   submitId String? @onCreate(uuid())
-  adminId String
-  admin User @relation (fields: [adminId] , references: [id])
+  adminId String @default("")
+  admin User @relation(references: [id], fields: [adminId])
 
-  @@unique([problemStatement , adminId])
 } 
 
 model  ProblemStatus {
@@ -33,10 +32,11 @@ model  ProblemStatus {
   problemId String
   problem  Problems @relation(fields: [problemId], references: [id])
   code String
-  userId String
-  user User @relation(fields: [userId] , references: [id])
   language language
   status Status @default(not_attempted)
+  userId String
+  user User @relation(fields: [userId] , references: [id])
+
 }
 
 enum  difficultyLevel {

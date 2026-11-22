@@ -399,7 +399,7 @@
               }
             },
             "relations": {
-              "problemStatus": {
+              "ProblemStatus": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
@@ -414,7 +414,7 @@
                   "namespace": "public"
                 }
               },
-              "prolems": {
+              "problems": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
@@ -604,6 +604,10 @@
                 "adminId": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": ""
+                  },
                   "nullable": false
                 },
                 "description": {
@@ -688,14 +692,7 @@
                   "id"
                 ]
               },
-              "uniques": [
-                {
-                  "columns": [
-                    "problemStatement",
-                    "adminId"
-                  ]
-                }
-              ]
+              "uniques": []
             },
             "User": {
               "checks": [
@@ -804,7 +801,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "d0c5b9105b92535d26649a2a9abdd3a58f47d1855edf9573c1462b19c5e04edb"
+    "storageHash": "c6c420b7696fb44a725c7e5ebba9624e38954b37e2fe593f8ffc8124d02b0ebc"
   },
   "execution": {
     "executionHash": "5ef045b0a63948919f0dd2eaaa98ed8ab6f275409a34e176060f7c5970ea5e62",

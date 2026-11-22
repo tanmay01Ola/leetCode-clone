@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "leetCode-clone",
+      "dependencies": {
+        "redis": "^6.3.1",
+      },
       "devDependencies": {
         "prettier": "3.9.6",
         "turbo": "^2.11.10",

@@ -1,0 +1,172 @@
+[
+  {
+    "id": "column.public.Problems.adminId",
+    "label": "Add column \"adminId\" to \"Problems\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "adminId",
+        "table": "Problems"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"adminId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "adminId"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"adminId\" on \"Problems\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"adminId\"",
+        "sql": "ALTER TABLE \"public\".\"Problems\" ADD COLUMN \"adminId\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"adminId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "adminId"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"adminId\" on \"Problems\""
+        }
+      },
+      {
+        "description": "verify column \"adminId\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "adminId",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"adminId\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Problems",
+          "adminId",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Problems.Problems_adminId_idx_530179db",
+    "label": "Create index \"Problems_adminId_idx_530179db\" on \"Problems\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Problems_adminId_idx_530179db",
+        "table": "Problems"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Problems_adminId_idx_530179db\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Problems_adminId_idx_530179db\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Problems_adminId_idx_530179db\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Problems_adminId_idx_530179db\"",
+        "sql": "CREATE INDEX \"Problems_adminId_idx_530179db\" ON \"public\".\"Problems\" (\"adminId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Problems_adminId_idx_530179db\" exists on \"Problems\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Problems_adminId_idx_530179db\"",
+          "i",
+          "I",
+          "\"public\".\"Problems\"",
+          "btree",
+          "[\"adminId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Problems.Problems_adminId_fkey",
+    "label": "Add foreign key \"Problems_adminId_fkey\" on \"Problems\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Problems_adminId_fkey",
+        "table": "Problems"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Problems_adminId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Problems_adminId_fkey",
+          "public",
+          "\"public\".\"Problems\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Problems_adminId_fkey\" on \"Problems\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Problems_adminId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Problems\"\nADD CONSTRAINT \"Problems_adminId_fkey\"\nFOREIGN KEY (\"adminId\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Problems_adminId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Problems_adminId_fkey",
+          "public",
+          "\"public\".\"Problems\"",
+          "f",
+          "[\"adminId\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  }
+]

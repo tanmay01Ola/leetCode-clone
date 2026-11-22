@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'d0c5b9105b92535d26649a2a9abdd3a58f47d1855edf9573c1462b19c5e04edb'>;
+  StorageHashBase<'c6c420b7696fb44a725c7e5ebba9624e38954b37e2fe593f8ffc8124d02b0ebc'>;
 export type ExecutionHash =
   ExecutionHashBase<'5ef045b0a63948919f0dd2eaaa98ed8ab6f275409a34e176060f7c5970ea5e62'>;
 export type ProfileHash =
@@ -347,9 +347,9 @@ export namespace Models {
     password: FieldOutputTypes['public']['User']['password'];
     role: FieldOutputTypes['public']['User']['role'];
     username: FieldOutputTypes['public']['User']['username'];
-    problemStatus: public_ProblemStatus[];
-    prolems: public_Problems[];
-    readonly [RelationKeys]?: 'problemStatus' | 'prolems';
+    ProblemStatus: public_ProblemStatus[];
+    problems: public_Problems[];
+    readonly [RelationKeys]?: 'ProblemStatus' | 'problems';
   };
 }
 
@@ -391,6 +391,10 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', ''>;
+                  };
                   readonly many: false;
                 };
                 readonly description: {
@@ -441,7 +445,7 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['problemStatement', 'adminId'] }];
+              uniques: readonly [];
               indexes: readonly [
                 {
                   readonly name: 'Problems_adminId_idx_530179db';
@@ -800,7 +804,7 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
-              readonly problemStatus: {
+              readonly ProblemStatus: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
                   readonly model: 'ProblemStatus';
@@ -811,7 +815,7 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['userId'];
                 };
               };
-              readonly prolems: {
+              readonly problems: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
                   readonly model: 'Problems';

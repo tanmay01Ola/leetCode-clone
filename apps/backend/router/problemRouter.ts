@@ -32,7 +32,8 @@ problemRouter.post("/addProblem" ,auth ,async (req : Auth,res)=>{
         description : description,
         difficultyLevel : difficultyLevel,
         memoryLimit :memoryLimit,
-        CPUlimit : CPULimit
+        CPUlimit : CPULimit ,
+        adminId : userId
     })
     if(!addProblem){
         return(res.status(402).json({

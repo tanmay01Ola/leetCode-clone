@@ -3,9 +3,6 @@ const app = express();
 import { UserRouter } from "./router/userRouter";
 import { problemRouter } from "./router/problemRouter";
 import { submissionRouter } from "./router/submission";
-
-
-
 app.use(express.json())
 app.use("/user" , UserRouter);
 app.use("/" , problemRouter)
