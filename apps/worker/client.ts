@@ -4,6 +4,6 @@ dotenv.config({
 })
 import {createClient} from "redis";
 const url = process.env.REDIS_URL;
-export const redisClient = createClient({url : url}) ;
+export const redisClient = createClient({url : url})
 
 

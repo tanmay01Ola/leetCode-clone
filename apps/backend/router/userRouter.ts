@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { signinBody, signupBody } from "../zod";
-import { db } from "db";
+import { db } from "db/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 export const UserRouter = Router();

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "exports" : {
-    "." :"./src/prisma/db.ts"
+    "./client" :"./src/prisma/db.ts"
   } ,
   "scripts": {
     "contract:emit": "prisma contract emit"

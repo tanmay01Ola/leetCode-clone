@@ -1,11 +1,11 @@
 import { Router } from "express";
 export const submissionRouter = Router();
 import { auth, type Auth } from "../middlewares/authMiddleware";
-import { db } from "db";
+import { db } from "db/client";
 import { submissionBody } from "../zod";
 import {redisClient} from "../../worker/client";
 import {WorkerLoop} from "../../worker/index"
-redisClient.connect()
+  await redisClient.connect()
 submissionRouter.post("/:problemId",auth ,  async(req : Auth   ,res)=>{
 const userId = req.id;
 if(!userId){
@@ -43,12 +43,48 @@ if(!userId){
         language ,
         submissionId
     }
-    await redisClient.lPush("problems" , JSON.stringify({job}))
-    console.log("BEFORE THAT")
-   WorkerLoop()
+       await redisClient.lPush("problems" , JSON.stringify({job}))
+   WorkerLoop() ;
     res.json({
         message : "processing..",
        submitId : submissionId   
     })
 
+})
+
+submissionRouter.get("/:problemId", auth , async(req : Auth ,res)=>{
+    const userId = req.id;
+    if(!userId){
+        return res.status(400).json({
+            message : "user_not_logged_in"
+        })
+    }
+    const problemId = req.params.problemId;
+    if(! (typeof problemId === "string")){
+        return(res.status(400).json({
+            message : "BAD_REQUEST"
+        }))
+    }
+    const response = await db.orm.public.ProblemStatus.whereUnique({
+        problemId : problemId,
+        userId : userId
+    }).first()
+    console.log("RESPONSE =" , response)
+    if(response?.status === "accepted"){
+       return  res.json({
+            message : "accepted"
+        })
+    }
+    if(response?.status === "attempted"){
+        return res.json({
+            message : "attempted"
+        })
+    }
+    else{
+        return (
+            res.json({
+                message : "PROCESSING....."
+            })
+        )
+    }
 })

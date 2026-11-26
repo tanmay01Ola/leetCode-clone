@@ -42,8 +42,8 @@
                 "value": "not_attempted"
               },
               {
-                "name": "submitted",
-                "value": "submitted"
+                "name": "attempted",
+                "value": "attempted"
               },
               {
                 "name": "accepted",
@@ -469,8 +469,8 @@
                   "prefix": "ProblemStatus_language_check"
                 },
                 {
-                  "expression": "\"status\" IN ('not_attempted', 'submitted', 'accepted')",
-                  "name": "ProblemStatus_status_check_6e9e3569",
+                  "expression": "\"status\" IN ('not_attempted', 'attempted', 'accepted')",
+                  "name": "ProblemStatus_status_check_58713bdf",
                   "prefix": "ProblemStatus_status_check"
                 }
               ],
@@ -585,7 +585,14 @@
                   "id"
                 ]
               },
-              "uniques": []
+              "uniques": [
+                {
+                  "columns": [
+                    "userId",
+                    "problemId"
+                  ]
+                }
+              ]
             },
             "Problems": {
               "checks": [
@@ -772,7 +779,7 @@
               "kind": "valueSet",
               "values": [
                 "not_attempted",
-                "submitted",
+                "attempted",
                 "accepted"
               ]
             },
@@ -801,7 +808,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "c6c420b7696fb44a725c7e5ebba9624e38954b37e2fe593f8ffc8124d02b0ebc"
+    "storageHash": "ecf3d823c75381e7dd9b4c535549bca199783154f907409071415c12027da275"
   },
   "execution": {
     "executionHash": "5ef045b0a63948919f0dd2eaaa98ed8ab6f275409a34e176060f7c5970ea5e62",

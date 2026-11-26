@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'c6c420b7696fb44a725c7e5ebba9624e38954b37e2fe593f8ffc8124d02b0ebc'>;
+  StorageHashBase<'ecf3d823c75381e7dd9b4c535549bca199783154f907409071415c12027da275'>;
 export type ExecutionHash =
   ExecutionHashBase<'5ef045b0a63948919f0dd2eaaa98ed8ab6f275409a34e176060f7c5970ea5e62'>;
 export type ProfileHash =
@@ -253,8 +253,8 @@ type FieldTypeOverrides = {
           readonly input: 'javascript' | 'typescript' | 'go' | 'rust' | 'python' | 'ccc';
         };
         readonly status: {
-          readonly output: 'not_attempted' | 'submitted' | 'accepted';
-          readonly input: 'not_attempted' | 'submitted' | 'accepted';
+          readonly output: 'not_attempted' | 'attempted' | 'accepted';
+          readonly input: 'not_attempted' | 'attempted' | 'accepted';
         };
       };
       readonly User: {
@@ -291,8 +291,8 @@ type ColumnTypeOverrides = {
         readonly input: 'javascript' | 'typescript' | 'go' | 'rust' | 'python' | 'ccc';
       };
       readonly status: {
-        readonly output: 'not_attempted' | 'submitted' | 'accepted';
-        readonly input: 'not_attempted' | 'submitted' | 'accepted';
+        readonly output: 'not_attempted' | 'attempted' | 'accepted';
+        readonly input: 'not_attempted' | 'attempted' | 'accepted';
       };
     };
     readonly User: {
@@ -513,7 +513,7 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [];
+              uniques: readonly [{ readonly columns: readonly ['userId', 'problemId'] }];
               indexes: readonly [
                 {
                   readonly name: 'ProblemStatus_problemId_idx_0024556d';
@@ -616,7 +616,7 @@ type ContractBase = Omit<
             };
             readonly Status: {
               readonly kind: 'valueSet';
-              readonly values: readonly ['not_attempted', 'submitted', 'accepted'];
+              readonly values: readonly ['not_attempted', 'attempted', 'accepted'];
             };
           };
         };
@@ -852,7 +852,7 @@ type ContractBase = Omit<
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
               { readonly name: 'not_attempted'; readonly value: 'not_attempted' },
-              { readonly name: 'submitted'; readonly value: 'submitted' },
+              { readonly name: 'attempted'; readonly value: 'attempted' },
               { readonly name: 'accepted'; readonly value: 'accepted' },
             ];
           };
@@ -883,7 +883,7 @@ type ContractBase = Omit<
           ];
           readonly Status: readonly [
             { readonly name: 'not_attempted'; readonly value: 'not_attempted' },
-            { readonly name: 'submitted'; readonly value: 'submitted' },
+            { readonly name: 'attempted'; readonly value: 'attempted' },
             { readonly name: 'accepted'; readonly value: 'accepted' },
           ];
           readonly difficultyLevel: readonly [

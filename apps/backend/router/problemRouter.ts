@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { problemBody } from "../zod";
-import { db } from "db"
+import { db } from "db/client" ;
 import { hasRole } from "../helper/role";
 import { auth } from "../middlewares/authMiddleware";
 export const problemRouter = Router();
