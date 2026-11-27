@@ -46,3 +46,21 @@ problemRouter.post("/addProblem" ,auth ,async (req : Auth,res)=>{
         problemId : addProblem.id
     })
 })
+
+
+problemRouter.get("/" , auth , async(req : Auth,res)=>{
+    const userId = req.id;
+    if(!userId){
+        return(res.status(400).json({
+            message : "BAD_REQUEST"
+        }))
+    }
+    const problems = await db.orm.public.Problems.where({difficultyLevel : "easy"}).limit(10).all();
+    console.log("PROBLEMSSSSS====" , problems);
+    
+
+    res.json({
+        problems : problems
+    })
+    
+})

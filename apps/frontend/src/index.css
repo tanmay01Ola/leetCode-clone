@@ -1,14 +1,6 @@
 @import "../styles/globals.css";
 
-@layer base {
-  :root {
-    @apply font-sans;
-  }
 
-  body {
-    @apply grid place-items-center min-w-[320px] min-h-screen relative m-0 bg-background text-foreground;
-  }
-}
 .input {
 margin : 5;
 width: 350;
@@ -17,9 +9,10 @@ border-radius: 50;
 
 .button {
  width: 300;
- margin:  10;
+ margin:  20;
  height: 50;
  border-radius: 30;
 margin-left : 20;
 }
+
 
